@@ -1,30 +1,24 @@
-# Goal Gullak — MVP
+# Goal Gullak – deploy on Vercel
 
-One piggy bank (Gullak) per goal. Tap the sparkle-pig **Analyse** button and AI explains progress toward the goal,
-what you added versus what the market added, and when you could break the Gullak (reach the target) at an assumed rate.
-Goal tracking only: it never recommends funds, amounts or actions.
+## What's inside
+- `index.html` – the whole app (static).
+- `api/ai.js` – a Vercel serverless function. The Ask Gullak chat and the
+  Analyse / AI notes call `POST /api/ai`; it adds your Gemini key on the server
+  and calls the Gemini API. The key never reaches the browser.
+- `logo.png` – the logo (already embedded in `index.html`).
 
-```bash
-npm i && cp .env.example .env   # add GEMINI_API_KEY (server-side only)
-npm run dev                     # client :5173, API :8787
-npm test                        # guardrails, templates, mocked-Gemini pipeline, goal maths
-```
+## Deploy
+1. Push this folder to a GitHub repo (or run `npx vercel` inside it).
+2. Import it in Vercel. Framework preset: **Other**. No build command needed.
+3. Vercel → Project → Settings → Environment Variables, add:
+   - `GEMINI_API_KEY` = your Gemini key (required; `GOOGLE_API_KEY` also works)
+   - `GEMINI_MODEL` = optional, defaults to `gemini-flash-latest`
+   - `ALLOWED_ORIGIN` = optional, e.g. `https://your-project.vercel.app`
+4. Redeploy so the variables take effect.
 
-- `src/lib/goals.ts` all goal maths (series, you vs market, pace / break date). The LLM never computes numbers.
-- `shared/guard.ts` rejects AI output with invented ₹/%/numbers or advice phrases → `shared/templates.ts` fallback.
-- `server/insight.ts` Gemini call (JSON schema, 5 s timeout, cache); `shared/prompts.ts` prompts.
-- Insight types: `goal_summary`, `goal_month`, `cancel_check` (plus legacy month/storm/long-term/year types).
-- Example goals "Goa trip" and "Emergency fund" use illustrative contributions; "First bike" uses the real SIP data.
-- Rotate any API key that was ever pasted into chat.
+## How it decides where to send AI calls
+- Opened on claude.ai → uses Claude's built-in artifact AI.
+- Anywhere else (your Vercel site) → calls `/api/ai` (Gemini), which streams the answer back.
 
-## Ask Gullak (RAG chatbot)
-
-Pig-head chat, opened from the **Ask Gullak** pill on SIP details / goal detail and from the AI panel. One bot, always scoped to ONE goal.
-
-- `src/lib/askCorpus.ts` builds the goal's knowledge base (progress, you vs market, pace, streak, mood, every month) from the goal maths.
-- `shared/rag.ts` retrieval (BM25 + synonyms), rule gates (advice, other goals, off-topic, prompt injection → fixed refusals), and the answer guard (no advice phrases, no numbers outside the retrieved facts, no other goal names).
-- `server/ask.ts` + `POST /api/ask`: Gemini sees only the retrieved facts; any rejected or failed answer falls back to the facts themselves.
-- Suggested-question chips sit above the input so users see it is a goal Q&A, not a general chatbot.
-
-## Evaluation
-`npm run eval` runs the Ask Gullak golden set, a held-out set, a guard red-team and a mocked-model fallback test, and exits non-zero if a quality gate fails. The full report is in [docs/EVAL.md](docs/EVAL.md).
+## Local testing
+`npx vercel dev` (with a `.env` file based on `.env.example`), then open http://localhost:3000.
