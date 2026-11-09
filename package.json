@@ -1,6 +1,5 @@
 {
-  "name": "goal-gullak",
+  "name": "groww-gullak-ai",
   "private": true,
-  "type": "module",
-  "engines": { "node": ">=18" }
+  "type": "module"
 }

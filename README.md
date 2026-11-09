@@ -9,7 +9,7 @@
 
 ## Deploy
 1. Push this folder to a GitHub repo (or run `npx vercel` inside it).
-2. Import it in Vercel. Framework preset: **Other**. No build command needed.
+2. Import it in Vercel. `vercel.json` already sets the build (no Vite, no npm install), so dashboard build settings are overridden.
 3. Vercel → Project → Settings → Environment Variables, add:
    - `GEMINI_API_KEY` = your Gemini key (required; `GOOGLE_API_KEY` also works)
    - `GEMINI_MODEL` = optional, defaults to `gemini-flash-latest`
