@@ -128,6 +128,7 @@ export function retrieve(question: string, chunks: Chunk[], k = 3, history: stri
   if (/\b(how far|how much (money|is (in|there)|do i have|have i got)|balance|worth|holding|total (value|amount)|what percent|how many percent|percentage)\b/i.test(question)) boost('progress', 6)
   if (/\b(my own|myself|by me|from me|i (have |had )?(added|put|paid|invested|contributed))\b/i.test(question)) boost('split', 5)
   if (/\b(sip (date|amount|day)|how much is my sip|monthly (amount|sip)|instalment amount|which day|date and amount)\b/i.test(question)) boost('overview', 6)
+  if (/\b(next|upcoming|due|when|schedule|scheduled|autopay)\b/i.test(question) && /\b(sip|instalment|installment|date|autopay|deduct)\b/i.test(question)) boost('schedule', 8)
   return hits.filter((h) => h.score > 0).sort((a, b) => b.score - a.score).slice(0, k)
 }
 

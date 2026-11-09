@@ -5,6 +5,15 @@ import { inr } from '../../shared/format'
 
 const pct = (n: number) => `${Math.abs(n).toFixed(1)}%`
 
+/** Matches the SIP details screen: today in this prototype is 3 Nov 2026. */
+function scheduleFact(g: Goal): string {
+  const every = `Your SIP goes out on day ${g.day} of every month.`
+  if (g.broken) return `${every} The SIP is cancelled, so there is no next SIP date.`
+  if (g.nov) return `${every} The November 2026 instalment is already ${g.nov}. The next SIP date is ${g.day} December 2026.`
+  if (g.day <= 3) return `${every} The current instalment is dated ${g.day} November 2026, and the autopay deduction is in progress. The next SIP date after that is ${g.day} December 2026.`
+  return `${every} The next SIP date is ${g.day} November 2026.`
+}
+
 /**
  * The knowledge base for ONE Gullak. Every chunk is a plain-sentence fact built from the goal's own maths,
  * so the chatbot can only ever know this goal. Numbers come from code, never from the model.
@@ -21,6 +30,7 @@ export function buildCorpus(g: Goal): Chunk[] {
 
   add('overview', 'Goal overview',
     `${g.name} Gullak is a goal of ${inr(g.target)} by ${targetLabel(g)}. The SIP is ${inr(g.monthly)} a month on day ${g.day}, in ${g.fund}.`)
+  add('schedule', 'Next SIP date due autopay scheduled when', scheduleFact(g))
 
   if (!rows.length) {
     add('new', 'No contributions yet', `Nothing has gone into this Gullak yet. The first instalment of ${inr(g.monthly)} is yet to land, so there is no progress or streak to show.`)
