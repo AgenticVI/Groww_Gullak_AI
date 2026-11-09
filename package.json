@@ -10,6 +10,7 @@
     "build": "tsc --noEmit && vite build",
     "start": "tsx server/index.ts",
     "typecheck": "tsc --noEmit",
+    "eval": "tsx eval/run.mts",
     "test": "tsx --test shared/guard.test.ts shared/templates.test.ts shared/server.test.ts shared/rag.test.ts"
   },
   "dependencies": {

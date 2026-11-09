@@ -25,3 +25,6 @@ Pig-head chat, opened from the **Ask Gullak** pill on SIP details / goal detail 
 - `shared/rag.ts` retrieval (BM25 + synonyms), rule gates (advice, other goals, off-topic, prompt injection → fixed refusals), and the answer guard (no advice phrases, no numbers outside the retrieved facts, no other goal names).
 - `server/ask.ts` + `POST /api/ask`: Gemini sees only the retrieved facts; any rejected or failed answer falls back to the facts themselves.
 - Suggested-question chips sit above the input so users see it is a goal Q&A, not a general chatbot.
+
+## Evaluation
+`npm run eval` runs the Ask Gullak golden set, a held-out set, a guard red-team and a mocked-model fallback test, and exits non-zero if a quality gate fails. The full report is in [docs/EVAL.md](docs/EVAL.md).
